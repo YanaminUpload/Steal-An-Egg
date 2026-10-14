@@ -364,7 +364,6 @@ end
 
 -- ==================== [ EKSEKUSI UTAMA ] ====================
 setupSafeAntiAFK()
-setupAntiLag()
 
 task.spawn(requestEquip)
 
