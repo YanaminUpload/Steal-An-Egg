@@ -333,9 +333,18 @@ upgradeRemote = upgradeRemote and upgradeRemote:WaitForChild("RF/Treadmill/AskTi
 
 local function textToNumber(txt)
     txt = tostring(txt or ""):lower():gsub("[%$,%s]", "")
-    local suffix = txt:match("([kmbt])$")
-    local multiplier = ({ k = 1e3, m = 1e6, b = 1e9, t = 1e12 })[suffix] or 1
-    if suffix then txt = txt:sub(1, -2) end
+    local suffix = txt:match("([a-z]+)$")
+    local multipliers = {
+        k = 1e3,
+        m = 1e6,
+        b = 1e9,
+        t = 1e12,
+        qa = 1e15,
+    }
+    local multiplier = multipliers[suffix] or 1
+    if suffix and multipliers[suffix] then
+        txt = txt:sub(1, #txt - #suffix)
+    end
     return (tonumber(txt) or 0) * multiplier
 end
 
