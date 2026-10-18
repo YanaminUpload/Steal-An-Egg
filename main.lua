@@ -15,115 +15,92 @@ local LocalPlayer = Players.LocalPlayer
 local startPlaceId = game.PlaceId
 
 -- ==================== [ GUI USERNAME AKUN ] ====================
+local CoreGui = game:GetService("CoreGui")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AccountInfoGui"
+screenGui.ResetOnSpawn = false
 
-local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-gui.Name = "AccountGUI"
-gui.ResetOnSpawn = false
+local player = Players.LocalPlayer 
+local myUserId = player.UserId
+local myUsername = player.Name
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 200, 0, 40)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.3
-
-local corner = Instance.new("UICorner", frame)
-corner.CornerRadius = UDim.new(0, 10)
-
-local label = Instance.new("TextLabel", frame)
-label.Size = UDim2.new(1, -26, 1, 0)
-label.Position = UDim2.new(0, 0, 0, 0)
-label.BackgroundTransparency = 1
-label.Text = "Account: " .. LocalPlayer.Name
-label.TextColor3 = Color3.fromRGB(255, 255, 255)
-label.TextScaled = true
-label.Font = Enum.Font.GothamBold
-label.TextXAlignment = Enum.TextXAlignment.Left
-
-local minBtn = Instance.new("TextButton", frame)
-minBtn.Size = UDim2.new(0, 20, 0, 20)
-minBtn.Position = UDim2.new(1, -22, 0, 2)
-minBtn.AnchorPoint = Vector2.new(1, 0)
-minBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-minBtn.BackgroundTransparency = 0.3
-minBtn.BorderSizePixel = 0
-minBtn.Text = "–"
-minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minBtn.TextScaled = true
-minBtn.Font = Enum.Font.GothamBold
-
-local minCorner = Instance.new("UICorner", minBtn)
-minCorner.CornerRadius = UDim.new(0, 5)
-
-local toggle = Instance.new("TextButton", gui)
-toggle.Size = UDim2.new(0, 30, 0, 30)
-toggle.Position = frame.Position
-toggle.AnchorPoint = Vector2.new(0.5, 0.5)
-toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-toggle.BackgroundTransparency = 0.35
-toggle.BorderSizePixel = 0
-toggle.Text = ""
-toggle.Active = true
-toggle.AutoButtonColor = false
-toggle.Visible = false
-
-local toggleCorner = Instance.new("UICorner", toggle)
-toggleCorner.CornerRadius = UDim.new(1, 0)
-
--- Aksi meminimalkan GUI
-minBtn.MouseButton1Click:Connect(function()
-    frame.Visible = false
-    toggle.Position = frame.Position
-    toggle.AnchorPoint = Vector2.new(0.5, 0.5)
-    toggle.Visible = true
+local suksesGui, errGui = pcall(function()
+    screenGui.Parent = CoreGui
 end)
-
--- Aksi memaksimalkan GUI saat tombol toggle diklik (Bekerja di PC & HP)
-toggle.MouseButton1Click:Connect(function()
-    toggle.Visible = false
-    frame.Visible = true
-end)
-
--- Logika menyeret (dragging) tombol toggle khusus agar tidak mengganggu ketukan klik di HP
-local dragging = false
-local dragInput, dragStart, startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    toggle.Position = UDim2.new(
-        startPos.X.Scale, startPos.X.Offset + delta.X,
-        startPos.Y.Scale, startPos.Y.Offset + delta.Y
-    )
-    frame.Position = toggle.Position -- Sinkronisasi posisi frame utama saat diseret
+if not suksesGui then
+    screenGui.Parent = player:WaitForChild("PlayerGui")
 end
 
-toggle.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = toggle.Position
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 50)
+frame.Position = UDim2.new(0.5, -125, 0.5, -25)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.BackgroundTransparency = 0.2
+frame.Parent = screenGui
 
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 8)
+uiCorner.Parent = frame
+
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, -40, 1, 0)
+label.Position = UDim2.new(0, 10, 0, 0)
+label.BackgroundTransparency = 1
+label.Text = "Account: " .. myUsername
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.SourceSansBold
+label.TextSize = 18
+label.TextXAlignment = Enum.TextXAlignment.Left
+label.Parent = frame
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0, 25, 0, 25)
+toggleBtn.Position = UDim2.new(1, -35, 0.5, -12.5)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleBtn.Text = "-"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.Font = Enum.Font.SourceSansBold
+toggleBtn.TextSize = 18
+toggleBtn.Parent = frame
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 6)
+btnCorner.Parent = toggleBtn
+
+local invisibleClicker = Instance.new("TextButton")
+invisibleClicker.Size = UDim2.new(1, 0, 1, 0)
+invisibleClicker.BackgroundTransparency = 1
+invisibleClicker.Text = ""
+invisibleClicker.Visible = false
+invisibleClicker.Parent = frame
+
+local isMinimized = false
+
+toggleBtn.MouseButton1Click:Connect(function()
+    if not isMinimized then
+        isMinimized = true
+        toggleBtn.Visible = false
+        label.Visible = false
+        frame:TweenSize(UDim2.new(0, 50, 0, 50), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+        task.wait(0.3)
+        invisibleClicker.Visible = true
     end
 end)
 
-toggle.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
+invisibleClicker.MouseButton1Click:Connect(function()
+    if isMinimized then
+        isMinimized = false
+        invisibleClicker.Visible = false
+        frame:TweenSize(UDim2.new(0, 250, 0, 50), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+        task.wait(0.15)
+        label.Visible = true
+        toggleBtn.Position = UDim2.new(1, -35, 0.5, -12.5)
+        toggleBtn.Text = "-"
+        toggleBtn.Visible = true
     end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
-end)
-
-print("[MELOAD] Loaded - treadmill + reconnect + GUI aktif (HP & PC Fix)")
 
 -- Variabel Kontrol untuk Fitur Auto Reconnect
 local autoReconnectEnabled = true
@@ -202,7 +179,6 @@ local function findMyOwnPlot()
         if playerNameLabel and playerNameLabel:IsA("TextLabel") then
             local txt = playerNameLabel.Text
             if txt == myDisplayName or txt == myUsername then
-                print("[SUKSES CLOCK] Menemukan plot valid milikmu! Nomor Kavling: [" .. plot.Name .. "]")
                 return plot
             end
         end
@@ -210,6 +186,31 @@ local function findMyOwnPlot()
     return nil
 end
 
+-- Bersihkan objek visual lokal yang tidak diperlukan setelah plot pemain ditemukan.
+local function cleanupWorkspace()
+    local plotsFolder = workspace:FindFirstChild("Plots")
+    if plotsFolder then
+        local ownPlot = findMyOwnPlot()
+        if ownPlot then
+            for _, plot in ipairs(plotsFolder:GetChildren()) do
+                if plot ~= ownPlot then
+                    pcall(function() plot:Destroy() end)
+                end
+            end
+        else
+            warn("[Cleanup] Plot sendiri belum ditemukan; plot lain tidak dihapus.")
+        end
+    end
+
+    for _, objectName in ipairs({ "ClientRenderedAssets", "PlacedEggRenders" }) do
+        local object = workspace:FindFirstChild(objectName)
+        if object then
+            pcall(function() object:Destroy() end)
+        end
+    end
+end
+
+cleanupWorkspace()
 -- ==================== [ FUNGSI UTAMA TREADMILL ] ====================
 
 local function requestEquip()
@@ -226,7 +227,6 @@ local function requestEquip()
     local attempts = 0
     while rootPart and rootPart.Anchored == false and attempts < 10 do
         attempts = attempts + 1
-        print("[VALIDATOR] Karakter belum terkunci di treadmill. Siklus percobaan ke-" .. tostring(attempts))
         
         local myPlot = findMyOwnPlot()
         local targetPosition = nil
@@ -269,7 +269,6 @@ local function requestEquip()
             
             task.wait(0.5)
         else
-            warn("[WARNING] Gagal melacak treadmill di plot milikmu. Mencoba bypass remote langsung sebagai cadangan...")
         end
         
         if Event and Event:IsA("RemoteFunction") then
@@ -282,7 +281,6 @@ local function requestEquip()
     end
     
     if rootPart and rootPart.Anchored == true then
-        print("[SUKSES MUTLAK] Karakter resmi ter-anchored di atas treadmill base milik sendiri!")
     else
         warn("[GAGAL] Batas percobaan loop habis, karakter masih gagal naik ke treadmill.")
     end
@@ -308,81 +306,100 @@ local function setupSafeAntiAFK()
     end)
 end
 
--- ==================== [ ANTI-LAG KUSTOM BARU ] ====================
-
-local function setupAntiLag()
-    local Terrain = workspace:FindFirstChildWhichIsA("Terrain")
-    if Terrain then
-        Terrain.WaterWaveSize = 0
-        Terrain.WaterWaveSpeed = 0
-        Terrain.WaterReflectance = 0
-        Terrain.WaterTransparency = 1
-    end
-
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 9e9
-    Lighting.FogStart = 9e9
-    
-    settings().Rendering.QualityLevel = 1
-    
-    for _, v in pairs(game:GetDescendants()) do
-        if v:IsA("BasePart") then
-            v.CastShadow = false
-            v.Material = "Plastic"
-            v.Reflectance = 0
-            v.BackSurface = "SmoothNoOutlines"
-            v.BottomSurface = "SmoothNoOutlines"
-            v.FrontSurface = "SmoothNoOutlines"
-            v.LeftSurface = "SmoothNoOutlines"
-            v.RightSurface = "SmoothNoOutlines"
-            v.TopSurface = "SmoothNoOutlines"
-        elseif v:IsA("Decal") then
-            v.Transparency = 1
-            v.Texture = ""
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Lifetime = NumberRange.new(0)
-        end
-    end
-
-    for _, v in pairs(Lighting:GetDescendants()) do
-        if v:IsA("PostEffect") then
-            v.Enabled = false
-        end
-    end
-
-    workspace.DescendantAdded:Connect(function(child)
-        task.spawn(function()
-            if child:IsA("ForceField") or child:IsA("Sparkles") or child:IsA("Smoke") or child:IsA("Fire") or child:IsA("Beam") then
-                RunService.Heartbeat:Wait()
-                child:Destroy()
-            elseif child:IsA("BasePart") then
-                child.CastShadow = false
-            end
-        end)
-    end)
-end
-
 -- ==================== [ EKSEKUSI UTAMA ] ====================
 setupSafeAntiAFK()
 
 task.spawn(requestEquip)
 
-if setfpscap then
-    setfpscap(15) 
-else
-    warn("Executor atau lingkungan ini tidak mendukung setfpscap!")
-end
-
-local lastLogTime = 0
-RunService.RenderStepped:Connect(function(deltaTime)
-    if os.clock() - lastLogTime >= 5 then
-        local fps = math.floor(1 / deltaTime)
-        print("💡 Monitor FPS - Saat ini: " .. fps)
-        lastLogTime = os.clock()
-    end
-end)
-
 LocalPlayer.CharacterAdded:Connect(function(character)
     task.wait(5) 
     requestEquip()
+end)
+
+local player = Players.LocalPlayer
+local upgradeEnabled = true
+local upgradeRemote = ReplicatedStorage:WaitForChild("Packages", 15)
+upgradeRemote = upgradeRemote and upgradeRemote:WaitForChild("Networking", 15)
+upgradeRemote = upgradeRemote and upgradeRemote:WaitForChild("RF/Treadmill/AskTierRaise", 15)
+
+local function textToNumber(txt)
+    txt = tostring(txt or ""):lower():gsub("[%$,%s]", "")
+    local suffix = txt:match("([kmbt])$")
+    local multiplier = ({ k = 1e3, m = 1e6, b = 1e9, t = 1e12 })[suffix] or 1
+    if suffix then txt = txt:sub(1, -2) end
+    return (tonumber(txt) or 0) * multiplier
+end
+
+local function getTreadmillFolder(plot)
+    return plot and plot:FindFirstChild("TreadmillUpgrade", true)
+end
+
+local function findUpgradeUI(treadmillFolder)
+    local sign = treadmillFolder and treadmillFolder:FindFirstChild("Sign", true)
+    local surfaceGui = sign and sign:FindFirstChildWhichIsA("SurfaceGui", true)
+    local frame = surfaceGui and surfaceGui:FindFirstChild("Frame", true)
+    local button = frame and frame:FindFirstChild("Upgrade", true)
+    local cost = button and button:FindFirstChild("Cost", true)
+    return button, cost
+end
+
+_G.AutoUpgradeSmartFinal = true
+
+local lastTriedUpgradePrice = nil
+task.spawn(function()
+    while _G.AutoUpgradeSmartFinal and upgradeEnabled do
+        task.wait(1)
+        local ok, err = pcall(function()
+            if not upgradeRemote or not upgradeRemote:IsA("RemoteFunction") then return end
+
+            local plot = findMyOwnPlot()
+            local treadmillFolder = getTreadmillFolder(plot)
+            local button, costLabel = findUpgradeUI(treadmillFolder)
+            if not button or not costLabel or not costLabel:IsA("TextLabel") then return end
+
+            local price = textToNumber(costLabel.Text)
+            if price <= 0 then return end
+
+            local hud = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("HUD")
+            if not hud then return end
+            local balance
+            for _, descendant in ipairs(hud:GetDescendants()) do
+                if descendant:IsA("TextLabel") and descendant.Name == "Value" then
+                    local amount = textToNumber(descendant.Text)
+                    if amount > 0 then balance = amount break end
+                end
+            end
+            if not balance or balance < price then return end
+            if lastTriedUpgradePrice == price then return end
+            lastTriedUpgradePrice = price
+
+            local data = ReplicatedStorage:FindFirstChild("Data")
+            local treadmillData = data and data:FindFirstChild("Treadmills")
+            local configs = treadmillData and treadmillData:FindFirstChild("Configs")
+            if not configs then
+                warn("[AutoUpgrade] Folder Data.Treadmills.Configs tidak ditemukan.")
+                return
+            end
+
+            local tried = 0
+            for _, config in ipairs(configs:GetChildren()) do
+                if config:IsA("ModuleScript") and config.Name ~= "Treadmill" then
+                    local invokeOk, invokeResult = pcall(function()
+                        return upgradeRemote:InvokeServer(config.Name)
+                    end)
+                    if not invokeOk then
+                        warn("[AutoUpgrade] Gagal untuk " .. config.Name .. ": " .. tostring(invokeResult))
+                    end
+                    tried = tried + 1
+                    task.wait(0.5)
+                end
+            end
+            if tried == 0 then
+                warn("[AutoUpgrade] Tidak ada config treadmill untuk dicoba.")
+            else
+                task.spawn(requestEquip)
+            end
+        end)
+        if not ok then warn("[AutoUpgrade]", err) end
+    end
 end)
