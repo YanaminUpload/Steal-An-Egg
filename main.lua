@@ -39,6 +39,15 @@ frame.BorderSizePixel = 0
 frame.BackgroundTransparency = 0.2
 frame.Parent = screenGui
 
+pcall(function()
+    GuiService.MenuOpened:Connect(function()
+        screenGui.Enabled = false
+    end)
+    GuiService.MenuClosed:Connect(function()
+        screenGui.Enabled = true
+    end)
+end)
+
 local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 8)
 uiCorner.Parent = frame
